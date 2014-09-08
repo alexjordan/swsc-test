@@ -23,16 +23,14 @@ void _sc_reserve()
       ::
       );
 
-  sc_top -= n;
-  n_spill = sc_top + _spm_ext_diff - m_top - SWSC_SIZE;
+  //sc_top -= n;
+  //n_spill = sc_top + _spm_ext_diff - m_top - SWSC_SIZE;
 
-#if 0
-  for (i = 0; i < n_spill; i++){
+  for (i = 0; i < n; i++){
     m_top -= 0x01;
-    spilled_word = *sc_top;
+    spilled_word = *sc_top--;
     *m_top = spilled_word;
   }
-#endif
 
   asm volatile(
       "mov $r27 = %0;" // copy sc_top to st
