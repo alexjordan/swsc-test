@@ -38,7 +38,7 @@ void _sc_reserve()
       "mov $r27 = %0;" // copy sc_top to st
       "mov $r28 = %1;" // copy m_top to ss
       : /* no output regs */
-      : "r"(n_spill), "r"(m_top) /* input regs */
+      : "r"(sc_top), "r"(m_top) /* input regs */
       : "$r27", "$r28" /* clobbered */
       );
 }
