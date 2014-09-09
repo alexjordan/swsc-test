@@ -7,12 +7,13 @@ extern int _addr_base_spm;
 extern int _addr_base_ext;
 extern int _spm_ext_diff;
 extern int SWSC_SIZE;
+
  
 #if 1
 void _sc_reserve() __attribute__((naked,used));
 void _sc_reserve()
 {
-  _SPM unsigned int *sc_top;
+  _SPM unsigned int *sc_top, *sc_top_tmp;
   _UNCACHED unsigned int *m_top;
   int i, n, n_spill;
   unsigned spilled_word;
@@ -23,14 +24,16 @@ void _sc_reserve()
       ::
       );
 
-  //sc_top -= n;
-  //n_spill = sc_top + _spm_ext_diff - m_top - SWSC_SIZE;
+  n_spill = m_top - sc_top - _spm_ext_diff + n - SWSC_SIZE; 
+  sc_top_tmp = sc_top;
 
-  for (i = 0; i < n; i++){
+  for (i = 0; i < n_spill; i++){
     m_top -= 0x01;
     spilled_word = *sc_top--;
     *m_top = spilled_word;
   }
+
+sc_top = sc_top_tmp;
 
   asm volatile(
       "mov $r27 = %0;" // copy sc_top to st
