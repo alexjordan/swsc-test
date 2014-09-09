@@ -8,7 +8,7 @@ extern int _addr_base_ext;
 extern int _spm_ext_diff;
 extern int SWSC_SIZE;
 
- 
+
 #if 1
 void _sc_reserve() __attribute__((naked,used));
 void _sc_reserve()
@@ -33,7 +33,7 @@ void _sc_reserve()
     *m_top = spilled_word;
   }
 
-sc_top = sc_top_tmp;
+  sc_top = sc_top_tmp - n;
 
   asm volatile(
       "mov $r27 = %0;" // copy sc_top to st
@@ -47,6 +47,6 @@ sc_top = sc_top_tmp;
 
 int main(int argc, char **argv) {
   puts("Hello world.\n");
-
+ // printf("0x%x\n", sc_top);
   return 0;
 }
