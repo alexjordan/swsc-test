@@ -95,12 +95,15 @@ void _sc_free()
 
   _SPM unsigned int *sc_top;
   _UNCACHED unsigned int *m_top;
-   int n;
+   int n, r1, r2;
 
-  asm volatile("mov %0 = $r1;" // copy argument to n
-      "mov %1 = $r27;" // copy st to sc_top
-      "mov %2 = $r28;" // copy ss to m_top
-      : "=r" (n), "=r"(sc_top), "=r"(m_top) /* output regs */
+  asm volatile(
+      "mov %0 = $r1;" // save r1
+      "mov %1 = $r2;" // save r2
+      "mov %2 = $r8;" // copy argument to n
+      "mov %3 = $r27;" // copy st to sc_top
+      "mov %4 = $r28;" // copy ss to m_top
+      : "=r" (r1), "=r" (r2), "=r" (n), "=r"(sc_top), "=r"(m_top) /* output regs */
       ::
       );
 
@@ -119,9 +122,11 @@ void _sc_free()
   asm volatile(
       "mov $r27 = %0;" // copy sc_top to st
       "mov $r28 = %1;" // copy m_top to ss
+      "mov $r1 = %2;" // restore r1
+      "mov $r2 = %3;" // restore r2
       : /* no output regs */
-      : "r"(sc_top), "r"(m_top) /* input regs */
-      : "$r27", "$r28" /* clobbered */
+      : "r"(sc_top), "r"(m_top), "r"(r1), "r"(r2) /* input regs */
+      : "$r1", "$r2", "$r27", "$r28" /* clobbered */
       );
 }
 #endif
