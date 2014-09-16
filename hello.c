@@ -9,15 +9,13 @@ extern int _spm_ext_diff;
 extern int SWSC_SIZE;
 
 
-int n, test;
-int  m_top, sc_top1;
 
 #if 1
 void _sc_reserve() __attribute__((naked,used));
 void _sc_reserve()
 {
 
-    int sc_top_tmp, m_top;
+  int sc_top_tmp, m_top, sc_top1;
   int   i, n, n_spill;
   int spilled_word;
   asm volatile("mov %0 = $r1;" // copy argument to n
@@ -36,9 +34,10 @@ void _sc_reserve()
   sc_top_tmp -= n ;
   sc_top1 = sc_top_tmp;
   
-  // spilled_word = *ext_mem--;
+   spilled_word = *ext_mem--; // m_top --
 
   for (i = 0; i < n_spill; i++){
+    m_top --;
     spilled_word = *spm--;
     *ext_mem-- = spilled_word;
   }
@@ -58,11 +57,9 @@ void _sc_reserve()
 void _sc_ensure() __attribute__((naked,used));
 void _sc_ensure()
 {
- // _SPM unsigned int *sc_top, *sc_top_tmp;
- // _UNCACHED unsigned int *m_top;
 
-  int m_top, sc_top;
-  int n;
+  int m_top, sc_top1;
+  int n, i, n_fill, filled_word;;
   int r1, r2;
   asm volatile(
       "mov %0 = $r1;" // save r1
@@ -70,9 +67,22 @@ void _sc_ensure()
       "mov %2 = $r8;" // copy argument to n
       "mov %3 = $r27;" // copy st to sc_top
       "mov %4 = $r28;" // copy ss to m_top
-      : "=r" (r1), "=r" (r2), "=r" (n), "=r"(sc_top), "=r"(m_top) /* output regs */
+      : "=r" (r1), "=r" (r2), "=r" (n), "=r"(sc_top1), "=r"(m_top) /* output regs */
       ::
       );
+
+  _SPM int *spm = (_SPM int *) sc_top1;
+  _UNCACHED int *ext_mem = (_UNCACHED int *) m_top;
+
+  n_fill = n - (m_top - sc_top1 - _spm_ext_diff); 
+  n_fill = n_fill / 4; // convert to words
+
+  for (i = 0; i < n_fill; i++){
+    m_top++;
+    filled_word = *ext_mem++;
+    *spm++ = filled_word;
+  }
+
 
   asm volatile(
       "mov $r27 = %0;" // sc_top
@@ -80,7 +90,7 @@ void _sc_ensure()
       "mov $r1 = %2;" // restore r1
       "mov $r2 = %3;" // restore r2
       : /* no output regs */
-      : "r"(sc_top), "r"(m_top), "r"(r1), "r"(r2) /* input regs */
+      : "r"(sc_top1), "r"(m_top), "r"(r1), "r"(r2) /* input regs */
       : "$r1", "$r2", "$r27", "$r28" /* clobbered */
       );
 }
@@ -92,9 +102,7 @@ void _sc_free() __attribute__((naked,used));
 void _sc_free()
 {
 
-
-
-  int sc_top, r1, r2;
+  int sc_top, r1, r2, m_top, n;
 
 
   asm volatile(
@@ -106,7 +114,6 @@ void _sc_free()
       : "=r" (r1), "=r" (r2), "=r" (n), "=r"(sc_top), "=r"(m_top) /* output regs */
       ::
       );
-test = sc_top;
 
   sc_top += n;
    
@@ -126,6 +133,26 @@ test = sc_top;
 }
 #endif
 
+#if 0
+void _sc_load() __attribute__((naked,used));
+void _sc_load()
+{
+
+  
+
+
+}
+#endif
+
+
+#if 0
+void _sc_store() __attribute__((naked,used));
+void _sc_store()
+{
+
+
+}
+#endif
 
 
 int main(int argc, char **argv) {
@@ -137,9 +164,10 @@ _SPM unsigned int *bar = (_SPM unsigned int*) _addr_base_spm;
   printf("0x%x\n", bar); 
 
 bar--;*/
- printf("0x%x\n", sc_top1); 
+// printf("0x%x\n", sc_top1); 
 // printf("0x%x\n", sc_top); 
- printf("0x%x\n", test); 
+// printf("0x%x\n", test); 
 
   return 0;
 }
+
