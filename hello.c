@@ -6,9 +6,10 @@
 extern int _addr_base_spm;
 extern int _addr_base_ext;
 extern int _spm_ext_diff;
-extern int SWSC_SIZE;
+extern int SWSC_EXT_SIZE;
+extern int SWSC_SPM_SIZE;
 
-
+#define MASK (SWSC_SPM_SIZE - 1)
 
 #if 1
 void _sc_reserve() __attribute__((naked,used));
@@ -25,16 +26,16 @@ void _sc_reserve()
       ::
       );
 
-  _SPM int *spm = (_SPM int *) sc_top1;
+  _SPM int *spm = (_SPM int *) (sc_top1 & MASK);
   _UNCACHED int *ext_mem = (_UNCACHED int *) m_top;
 
-  n_spill = m_top - sc_top1 - _spm_ext_diff + n - SWSC_SIZE; 
+  n_spill = m_top - sc_top1 - _spm_ext_diff + n - SWSC_SPM_SIZE; 
   n_spill = n_spill / 4; // convert to words
   sc_top_tmp = sc_top1;
   sc_top_tmp -= n ;
   sc_top1 = sc_top_tmp;
   
-   spilled_word = *ext_mem--; // m_top --
+  spilled_word = *ext_mem--; // m_top --
 
   for (i = 0; i < n_spill; i++){
     m_top --;
@@ -71,7 +72,7 @@ void _sc_ensure()
       ::
       );
 
-  _SPM int *spm = (_SPM int *) sc_top1;
+  _SPM int *spm = (_SPM int *) (sc_top1 & MASK);
   _UNCACHED int *ext_mem = (_UNCACHED int *) m_top;
 
   n_fill = n - (m_top - sc_top1 - _spm_ext_diff); 
@@ -158,7 +159,7 @@ void _sc_store()
 int main(int argc, char **argv) {
   
  puts("Hello world.\n"); 
-/* int st_val = 10;
+ int st_val = 10;
   int sc_top1;
 
   asm volatile(
@@ -181,7 +182,7 @@ int main(int argc, char **argv) {
 
   st_val =  *spm;
 
-  printf("0x%x\n", st_val);*/
+  printf("0x%x\n", st_val);
 
 
   return 0;
