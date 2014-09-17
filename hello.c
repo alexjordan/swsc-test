@@ -156,17 +156,33 @@ void _sc_store()
 
 
 int main(int argc, char **argv) {
-  puts("Hello world.\n");
- /*  int *foo = (int*) _addr_base_ext;
-*foo = 42;
-_SPM unsigned int *bar = (_SPM unsigned int*) _addr_base_spm;
-*bar = 42;
-  printf("0x%x\n", bar); 
+  
+ puts("Hello world.\n"); 
+/* int st_val = 10;
+  int sc_top1;
 
-bar--;*/
-// printf("0x%x\n", sc_top1); 
-// printf("0x%x\n", sc_top); 
-// printf("0x%x\n", test); 
+  asm volatile(
+      "mov %0 = $r27;" // copy st to sc_top
+      : "=r"(sc_top1) 
+      ::
+      );
+
+  _SPM int *spm = (_SPM int *) sc_top1;
+
+  *spm = st_val;
+  puts("Hello world.\n");
+
+
+  asm volatile(
+      "mov %0 = $r27;" // copy st to sc_top
+      : "=r"(sc_top1)
+      ::
+      );
+
+  st_val =  *spm;
+
+  printf("0x%x\n", st_val);*/
+
 
   return 0;
 }
