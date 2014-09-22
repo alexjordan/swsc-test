@@ -1,4 +1,4 @@
-PASIM_CONFIG=--lsize 64k
+PASIM_CONFIG=--lsize 16
 .PHONY: dis run clean
 
 hello.elf: hello.c
@@ -13,6 +13,10 @@ run: hello.elf
 run-debug: hello.elf
 	pasim ${PASIM_CONFIG} --debug --debug-fmt instr $< 2>&1 | less
 
+run-debug-r27: hello.elf
+	pasim ${PASIM_CONFIG} --debug --debug-fmt instr $< 2>&1 | grep r27.=
+
 clean:
 	rm -f *.elf
+
 

@@ -23,8 +23,8 @@ void _sc_reserve() __attribute__((naked,used));
 void _sc_reserve()
 {
 
-  unsigned sc_top_tmp, m_top, sc_top1;
-  int   i, n, n_spill;
+  unsigned sc_top_tmp, m_top, sc_top1, n, n_spill;
+  int   i;
   int spilled_word;
   asm volatile("mov %0 = $r1;" // copy argument to n
       "mov %1 = $r27;" // copy st to sc_top
@@ -75,8 +75,8 @@ void _sc_ensure() __attribute__((naked,used));
 void _sc_ensure()
 {
 
-  unsigned m_top, sc_top1;
-  int n, i, n_fill, filled_word;;
+  unsigned m_top, sc_top1, n, n_fill, filled_word;
+  int i;
   int r1, r2;
   asm volatile(
       "mov %0 = $r1;" // save r1
@@ -125,8 +125,8 @@ void _sc_free() __attribute__((naked,used));
 void _sc_free()
 {
 
-  int r1, r2, n;
-  unsigned sc_top, m_top;
+  int r1, r2;
+  unsigned sc_top, m_top, n;
 
   asm volatile(
       "mov %0 = $r1;" // save r1
