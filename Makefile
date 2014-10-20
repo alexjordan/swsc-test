@@ -1,8 +1,9 @@
+SWSC_SPM_SIZE=32
 PASIM_CONFIG=--lsize 1024
 .PHONY: dis run clean
 
 hello.elf: hello.c
-	patmos-clang -O1 -mpatmos-disable-stack-cache $< -o $@
+	patmos-clang -O1 -mpatmos-disable-stack-cache -mpatmos-swsc-spm-size=${SWSC_SPM_SIZE} $< -o $@
 
 dis: hello.elf
 	patmos-llvm-objdump -d $< | less
