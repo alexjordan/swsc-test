@@ -33,7 +33,7 @@ void _sc_reserve()
       );
 
 
-  _SPM char *spm = (_SPM char *) ((m_top - 1) & MASK);
+  _SPM char *spm = (_SPM char *) ((m_top - 1 - _spm_ext_diff) & MASK);
   _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top - 1);
 
   n_spill = (int) (m_top - sc_top - _spm_ext_diff + n * 4 - SWSC_SPM_SIZE); 
@@ -83,7 +83,7 @@ void _sc_ensure()
       ::
       );
 
-  _SPM char *spm = (_SPM char *) ((m_top - 1) & MASK);
+  _SPM char *spm = (_SPM char *) ((m_top - 1 - _spm_ext_diff) & MASK);
   _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top -1);
 
   n_fill = (int)(n * 4 - (m_top - sc_top - _spm_ext_diff)); 
@@ -204,11 +204,30 @@ void recursion(int i) {
 }
 
 int main(int argc, char **argv) {
+  
+unsigned  sc_top; 
 
 
-// call recursive function to deplete stack cache and cause spilling
- recursion(10);
+  asm volatile("mov %0 = $r27;" // copy st to sc_top
+      : "=r"(sc_top));
 
+  //printf("0x%x\n", sc_top);
+  _SPM int *spm = (_SPM int *) (sc_top & MASK);
+  //puts("foo");
+  *spm = 42;
+
+  if (*spm == 42)
+      puts("ok");
+
+  //puts("bar");
+  //printf("0x%x\n", (unsigned) sc_top);
+  //printf("= %d\n", *sc_top);
+
+  // call recursive function to deplete stack cache and cause spilling
+  recursion(10);
+
+  if (*spm == 42)
+      puts("ok");
   return 0;
 }
 
