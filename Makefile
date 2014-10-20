@@ -1,4 +1,4 @@
-PASIM_CONFIG=--lsize 16
+PASIM_CONFIG=--lsize 1024
 .PHONY: dis run clean
 
 hello.elf: hello.c
