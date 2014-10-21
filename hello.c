@@ -10,6 +10,7 @@ extern unsigned SWSC_EXT_SIZE;
 extern unsigned SWSC_SPM_SIZE;
 
 #define MASK (SWSC_SPM_SIZE - 1)
+#define EXT_MASK (SWSC_EXT_SIZE - 1)
 
 // define to poison SPM when spilling word
 #define POISON
@@ -22,7 +23,7 @@ void _sc_reserve() __attribute__((naked,used));
 void _sc_reserve()
 {
 
-  unsigned n, spilled_word, m_top, sc_top;
+  int n, spilled_word, m_top, sc_top;
   int   i;
   int  n_spill;
   asm volatile("mov %0 = $r1;" // copy argument to n
@@ -33,14 +34,16 @@ void _sc_reserve()
       );
 
 
-  _SPM char *spm = (_SPM char *) ((m_top - 1 - _spm_ext_diff) & MASK);
-  _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top - 1);
+  _UNCACHED unsigned *spm = (_UNCACHED unsigned *) (m_top & MASK);
+  _UNCACHED unsigned *ext_mem = (_UNCACHED unsigned *) (m_top & EXT_MASK);
 
-  n_spill = (int) (m_top - sc_top - _spm_ext_diff + n * 4 - SWSC_SPM_SIZE); 
   sc_top -= n * 4;
+  n_spill = m_top - sc_top - SWSC_SPM_SIZE; 
 
 
-  for (i = 0; i < n_spill; i++){
+
+  for (i = 0; i < n_spill/4; i++){
+    m_top -= 4;
     #ifdef POISON
       spilled_word = *spm;
       *spm = -1;
@@ -48,7 +51,7 @@ void _sc_reserve()
       spilled_word = *spm;
     #endif
     *ext_mem = spilled_word;
-    m_top--;
+    
 
   }
 
@@ -69,7 +72,7 @@ void _sc_ensure() __attribute__((naked,used));
 void _sc_ensure()
 {
 
-  unsigned  n, m_top, sc_top; 
+  int  n, m_top, sc_top; 
   char filled_word;
   int i, n_fill;
   int r1, r2;
@@ -83,17 +86,17 @@ void _sc_ensure()
       ::
       );
 
-  _SPM char *spm = (_SPM char *) ((m_top - 1 - _spm_ext_diff) & MASK);
-  _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top -1);
+  _SPM unsigned *spm = (_SPM unsigned *) (m_top & MASK);
+  _UNCACHED unsigned *ext_mem = (_UNCACHED unsigned *) (m_top & EXT_MASK);
 
-  n_fill = (int)(n * 4 - (m_top - sc_top - _spm_ext_diff)); 
+  n_fill = n*4 - (m_top - sc_top); 
 
-  for (i = 0; i < n_fill; i++){
+  for (i = 0; i < n_fill/4; i++){
     filled_word = *ext_mem;
     #ifndef NOENSURE
       *spm = filled_word;
     #endif
-    m_top++;
+    m_top += 4;
   }
 
 
@@ -130,10 +133,10 @@ void _sc_free()
       ::
       );
 
-  sc_top += n * 4;
+  sc_top += n*4;
    
-  if ((sc_top + _spm_ext_diff) > m_top) {
-	m_top = sc_top + _spm_ext_diff;
+  if (sc_top > m_top) {
+	m_top = sc_top ;
   }
 
   asm volatile(
@@ -205,14 +208,14 @@ void recursion(int i) {
 
 int main(int argc, char **argv) {
   
-unsigned  sc_top; 
+int  sc_top; 
 
 
   asm volatile("mov %0 = $r27;" // copy st to sc_top
       : "=r"(sc_top));
 
   //printf("0x%x\n", sc_top);
-  _SPM int *spm = (_SPM int *) (sc_top & MASK);
+  _SPM unsigned *spm = (_SPM unsigned *) ((sc_top)& MASK);
   //puts("foo");
   *spm = 42;
 
