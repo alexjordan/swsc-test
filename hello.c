@@ -15,7 +15,7 @@ extern unsigned SWSC_SPM_SIZE;
 #define POISON
 // define to disable filling (check if poisoned value comes back)
 // undefine to test whether spill/fill works
-#define NOENSURE
+//#define NOENSURE
 
 int test;
 #if 1
@@ -81,7 +81,7 @@ void _sc_ensure()
       ::
       );
 
-  n_fill = n*4 - (m_top - sc_top); 
+  n_fill = (n*4 - (m_top - sc_top)) / 4;
 
   for (i = 0; i < n_fill; i++){
     _SPM char *spm = (_SPM char *) (m_top & MASK);

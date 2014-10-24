@@ -1,4 +1,4 @@
-SWSC_SPM_SIZE=128
+SWSC_SPM_SIZE=32
 PASIM_CONFIG=--lsize 1024
 .PHONY: dis run clean
 
