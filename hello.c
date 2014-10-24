@@ -10,7 +10,6 @@ extern unsigned SWSC_EXT_SIZE;
 extern unsigned SWSC_SPM_SIZE;
 
 #define MASK (SWSC_SPM_SIZE - 1)
-#define EXT_MASK (SWSC_EXT_SIZE - 1)
 
 // define to poison SPM when spilling word
 #define POISON
@@ -18,6 +17,7 @@ extern unsigned SWSC_SPM_SIZE;
 // undefine to test whether spill/fill works
 #define NOENSURE
 
+int test;
 #if 1
 void _sc_reserve() __attribute__((naked,used,patmos_preserve_tmp));
 void _sc_reserve()
@@ -34,15 +34,15 @@ void _sc_reserve()
       );
 
 
-  _UNCACHED unsigned *spm = (_UNCACHED unsigned *) (m_top & MASK);
-  _UNCACHED unsigned *ext_mem = (_UNCACHED unsigned *) (m_top & EXT_MASK);
+  _UNCACHED char *spm = (_UNCACHED char *) (m_top & MASK);
+  _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
 
   sc_top -= n * 4;
   n_spill = m_top - sc_top - SWSC_SPM_SIZE; 
 
 
 
-  for (i = 0; i < n_spill/4; i++){
+  for (i = 0; i < n_spill; i++){
     m_top -= 4;
     #ifdef POISON
       spilled_word = *spm;
@@ -83,12 +83,12 @@ void _sc_ensure()
       ::
       );
 
-  _SPM unsigned *spm = (_SPM unsigned *) (m_top & MASK);
-  _UNCACHED unsigned *ext_mem = (_UNCACHED unsigned *) (m_top & EXT_MASK);
+  _SPM char *spm = (_SPM char *) (m_top & MASK);
+  _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
 
   n_fill = n*4 - (m_top - sc_top); 
 
-  for (i = 0; i < n_fill/4; i++){
+  for (i = 0; i < n_fill; i++){
     filled_word = *ext_mem;
     #ifndef NOENSURE
       *spm = filled_word;
@@ -204,23 +204,26 @@ int  sc_top;
   asm volatile("mov %0 = $r27;" // copy st to sc_top
       : "=r"(sc_top));
 
+
   //printf("0x%x\n", sc_top);
-  _SPM unsigned *spm = (_SPM unsigned *) ((sc_top)& MASK);
+  _UNCACHED char *spm = (_UNCACHED char *) ((sc_top)& MASK);
   //puts("foo");
+  
   *spm = 42;
 
   if (*spm == 42)
       puts("ok");
 
   //puts("bar");
-  //printf("0x%x\n", (unsigned) sc_top);
-  //printf("= %d\n", *sc_top);
-
+ // printf("0x%x\n", test);
+ 
   // call recursive function to deplete stack cache and cause spilling
   recursion(10);
 
   if (*spm == 42)
       puts("ok");
+  else 
+      puts("notok");
   return 0;
 }
 
