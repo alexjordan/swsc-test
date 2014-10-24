@@ -204,6 +204,12 @@ int  sc_top;
   asm volatile("mov %0 = $r27;" // copy st to sc_top
       : "=r"(sc_top));
 
+  int spm_test = (0 + SWSC_SPM_SIZE - 4) & MASK;
+  int spm_computed_test = (_addr_base_ext - 4) & MASK;
+  puts("---- check ext-to-spm conversion ----");
+  printf("spm 1st slot: 0x%x\n", spm_test);
+  printf("spm computed 1st slot: 0x%x\n", spm_computed_test);
+  puts("-------------------------------------");
 
   //printf("0x%x\n", sc_top);
   _UNCACHED char *spm = (_UNCACHED char *) ((sc_top)& MASK);
