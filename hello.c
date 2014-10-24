@@ -15,7 +15,7 @@ extern unsigned SWSC_SPM_SIZE;
 #define POISON
 // define to disable filling (check if poisoned value comes back)
 // undefine to test whether spill/fill works
-//#define NOENSURE
+#define NOENSURE
 
 int test;
 #if 1
@@ -23,7 +23,8 @@ void _sc_reserve() __attribute__((naked,used,patmos_preserve_tmp));
 void _sc_reserve()
 {
 
-  int n, spilled_word, m_top, sc_top;
+  int n, m_top, sc_top;
+  unsigned spilled_word;
   int   i;
   int  n_spill;
   asm volatile("mov %0 = $r1;" // copy argument to n
@@ -34,16 +35,15 @@ void _sc_reserve()
       );
 
 
-  _SPM char *spm = (_SPM char *) (m_top & MASK);
-  _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
 
   sc_top -= n * 4;
-  n_spill = m_top - sc_top - SWSC_SPM_SIZE; 
-
+  n_spill = (m_top - sc_top - (int) SWSC_SPM_SIZE) / 4;
 
 
   for (i = 0; i < n_spill; i++){
     m_top -= 4;
+    _SPM unsigned *spm = (_SPM unsigned *) (m_top & MASK);
+    _UNCACHED unsigned *ext_mem = (_UNCACHED unsigned *) (m_top);
     #ifdef POISON
       spilled_word = *spm;
       *spm = -1;
@@ -51,8 +51,6 @@ void _sc_reserve()
       spilled_word = *spm;
     #endif
     *ext_mem = spilled_word;
-    
-
   }
 
   asm volatile(
@@ -71,9 +69,9 @@ void _sc_reserve()
 void _sc_ensure() __attribute__((naked,used,patmos_preserve_tmp,patmos_preserve_ret));
 void _sc_ensure()
 {
-
-  int  n, m_top, sc_top; 
-  char filled_word;
+#if 1
+  int  n, m_top, sc_top;
+  unsigned filled_word;
   int i, n_fill;
   asm volatile(
       "mov %0 = $r8;" // copy argument to n
@@ -83,12 +81,12 @@ void _sc_ensure()
       ::
       );
 
-  _SPM char *spm = (_SPM char *) (m_top & MASK);
-  _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
-
   n_fill = n*4 - (m_top - sc_top); 
 
   for (i = 0; i < n_fill; i++){
+    _SPM char *spm = (_SPM char *) (m_top & MASK);
+    _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
+
     filled_word = *ext_mem;
     #ifndef NOENSURE
       *spm = filled_word;
@@ -106,6 +104,7 @@ void _sc_ensure()
       );
 
 
+#endif
 }
 #endif
 
@@ -114,8 +113,8 @@ void _sc_ensure()
 void _sc_free() __attribute__((naked,used,patmos_preserve_tmp,patmos_preserve_ret));
 void _sc_free()
 {
-
-  unsigned sc_top, m_top, n;
+#if 1
+  int sc_top, m_top, n;
 
   asm volatile(
       "mov %0 = $r8;" // copy argument to n
@@ -138,6 +137,7 @@ void _sc_free()
       : "r"(sc_top), "r"(m_top) /* input regs */
       : "$r27", "$r28" /* clobbered */
       );
+#endif
 }
 #endif
 
@@ -204,15 +204,8 @@ int  sc_top;
   asm volatile("mov %0 = $r27;" // copy st to sc_top
       : "=r"(sc_top));
 
-  int spm_test = (0 + SWSC_SPM_SIZE - 4) & MASK;
-  int spm_computed_test = (_addr_base_ext - 4) & MASK;
-  puts("---- check ext-to-spm conversion ----");
-  printf("spm 1st slot: 0x%x\n", spm_test);
-  printf("spm computed 1st slot: 0x%x\n", spm_computed_test);
-  puts("-------------------------------------");
-
   //printf("0x%x\n", sc_top);
-  _SPM char *spm = (_SPM char *) ((sc_top -4)& MASK);
+  _SPM char *spm = (_SPM char *) ((sc_top) & MASK);
   //puts("foo");
   
   *spm = 42;
@@ -228,7 +221,7 @@ int  sc_top;
 
   if (*spm == 42)
       puts("ok");
-  else 
+  else
       puts("notok");
   return 0;
 }
