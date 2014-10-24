@@ -34,7 +34,7 @@ void _sc_reserve()
       );
 
 
-  _UNCACHED char *spm = (_UNCACHED char *) (m_top & MASK);
+  _SPM char *spm = (_SPM char *) (m_top & MASK);
   _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
 
   sc_top -= n * 4;
@@ -83,7 +83,7 @@ void _sc_ensure()
       ::
       );
 
-  _UNCACHED char *spm = (_UNCACHED char *) (m_top & MASK);
+  _SPM char *spm = (_SPM char *) (m_top & MASK);
   _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
 
   n_fill = n*4 - (m_top - sc_top); 
@@ -212,7 +212,7 @@ int  sc_top;
   puts("-------------------------------------");
 
   //printf("0x%x\n", sc_top);
-  _UNCACHED char *spm = (_UNCACHED char *) ((sc_top -4)& MASK);
+  _SPM char *spm = (_SPM char *) ((sc_top -4)& MASK);
   //puts("foo");
   
   *spm = 42;
