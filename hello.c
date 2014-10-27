@@ -84,8 +84,8 @@ void _sc_ensure()
   n_fill = (n*4 - (m_top - sc_top)) / 4;
 
   for (i = 0; i < n_fill; i++){
-    _SPM char *spm = (_SPM char *) (m_top & MASK);
-    _UNCACHED char *ext_mem = (_UNCACHED char *) (m_top);
+    _SPM unsigned *spm = (_SPM unsigned *) (m_top & MASK);
+    _UNCACHED unsigned *ext_mem = (_UNCACHED unsigned *) (m_top);
 
     filled_word = *ext_mem;
     #ifndef NOENSURE
@@ -127,7 +127,7 @@ void _sc_free()
   sc_top += n*4;
    
   if (sc_top > m_top) {
-	m_top = sc_top ;
+  m_top = sc_top ;
   }
 
   asm volatile(
@@ -196,10 +196,15 @@ void recursion(int i) {
  puts("rec");
 }
 
-int main(int argc, char **argv) {
-  
-int  sc_top; 
+void victim() __attribute__((noinline));
+void victim() {
+  recursion(7);
+  puts("yelp");
+}
 
+int main(int argc, char **argv) {
+
+  int  sc_top;
 
   asm volatile("mov %0 = $r27;" // copy st to sc_top
       : "=r"(sc_top));
@@ -207,15 +212,15 @@ int  sc_top;
   //printf("0x%x\n", sc_top);
   _SPM char *spm = (_SPM char *) ((sc_top) & MASK);
   //puts("foo");
-  
+
   *spm = 42;
 
   if (*spm == 42)
       puts("ok");
 
   //puts("bar");
- // printf("0x%x\n", test);
- 
+  // printf("0x%x\n", test);
+
   // call recursive function to deplete stack cache and cause spilling
   recursion(10);
 
@@ -223,6 +228,8 @@ int  sc_top;
       puts("ok");
   else
       puts("notok");
+
+  victim();
   return 0;
 }
 
