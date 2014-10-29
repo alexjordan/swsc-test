@@ -17,6 +17,9 @@ run-debug: hello.elf
 run-debug-r27: hello.elf
 	pasim ${PASIM_CONFIG} --debug --debug-fmt instr $< 2>&1 | grep r27.=
 
+stats: hello.elf
+	pasim ${PASIM_CONFIG} --verbose $<
+
 clean:
 	rm -f *.elf
 
