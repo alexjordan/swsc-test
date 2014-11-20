@@ -17,8 +17,7 @@ extern unsigned SWSC_SPM_SIZE;
 // undefine to test whether spill/fill works
 //#define NOENSURE
 
-int test;
-#if 1
+#ifdef LOCAL_SC_FUNCS
 void _sc_reserve() __attribute__((naked,used,patmos_preserve_tmp));
 void _sc_reserve()
 {
@@ -65,7 +64,7 @@ void _sc_reserve()
 }
 #endif
 
-#if 1
+#ifdef LOCAL_SC_FUNCS
 void _sc_ensure() __attribute__((naked,used,patmos_preserve_tmp,patmos_preserve_ret));
 void _sc_ensure()
 {
@@ -109,7 +108,7 @@ void _sc_ensure()
 #endif
 
 
-#if 1
+#ifdef LOCAL_SC_FUNCS
 void _sc_free() __attribute__((naked,used,patmos_preserve_tmp,patmos_preserve_ret));
 void _sc_free()
 {
@@ -138,27 +137,6 @@ void _sc_free()
       : "$r27", "$r28" /* clobbered */
       );
 #endif
-}
-#endif
-
-#if 0
-void _sc_load() __attribute__((naked,used));
-void _sc_load()
-{
-
-  
-
-
-}
-#endif
-
-
-#if 0
-void _sc_store() __attribute__((naked,used));
-void _sc_store()
-{
-
-
 }
 #endif
 
@@ -199,7 +177,12 @@ void recursion(int i) {
 void victim() __attribute__((noinline));
 void victim() {
   recursion(7);
-  puts("yelp");
+  printf("yelp\n");
+  //printf("ULL 4x1: %lld %lld %lld %lld\n", u, u, u, u);
+
+  float f = 2.0f;
+  double d = 6.0;
+  printf("float 2.0, double 6.0: %f, %f\n", f, d);
 }
 
 int main(int argc, char **argv) {
