@@ -70,3 +70,5 @@ ais2 { instruction 0x21144 {
      }   }
 
 routine "_sc_reserve" violates calling conventions;
+routine "_sc_ensure" violates calling conventions;
+routine "_sc_free" violates calling conventions;
