@@ -2,7 +2,9 @@ SWSC_SPM_SIZE=32
 PASIM_CONFIG=--lsize 1024
 .PHONY: dis run clean
 
-hello.elf: hello.c
+all: hello.elf hello-nonrec-wcet.elf
+
+%.elf: %.c
 	patmos-clang -g -O1 -Xllc -mpatmos-enable-soft-sc -mpatmos-swsc-spm-size=${SWSC_SPM_SIZE} $< -o $@
 
 dis: hello.elf
