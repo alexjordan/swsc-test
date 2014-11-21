@@ -189,7 +189,7 @@ int main(int argc, char **argv) {
 
   int  sc_top;
 
-  asm volatile("mov %0 = $r27;" // copy st to sc_top
+  asm volatile("mov %0 = $r19;" // copy st to sc_top
       : "=r"(sc_top));
 
   //printf("0x%x\n", sc_top);

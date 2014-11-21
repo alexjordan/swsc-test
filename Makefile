@@ -17,7 +17,7 @@ run-debug: hello.elf
 	pasim ${PASIM_CONFIG} --debug --debug-fmt instr $< 2>&1 | less
 
 run-debug-r27: hello.elf
-	pasim ${PASIM_CONFIG} --debug --debug-fmt instr $< 2>&1 | grep r27.=
+	pasim ${PASIM_CONFIG} --debug --debug-fmt instr $< 2>&1 | grep r19.=
 
 stats: hello.elf
 	pasim ${PASIM_CONFIG} --verbose $<

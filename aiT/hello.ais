@@ -33,7 +33,7 @@ area 0x00000000 .. 0xffffffff access
     # timing for data write	
     data write transfer-time = [4, 0];
 
-#routine "_start" is interesting;
+routine "_sc_reserve" is interesting;
 
 snippet routine "exit" is external
         and uses exactly 0 bytes of system stack
@@ -65,8 +65,8 @@ snippet 0x20220 is not analyzed;
 
 ais2 { instruction 0x21144 {
          enter with:
-             reg("r27") = 0x40000,
-             reg("r28") = 0x40000;
+             reg("r19") = 0x40000,
+             reg("r20") = 0x40000;
      }   }
 
 routine "_sc_reserve" violates calling conventions;
