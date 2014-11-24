@@ -1,0 +1,45 @@
+<!DOCTYPE APX><project xmlns='http://www.absint.com/apx' target='patmos' version='13.04i'
+><options xmlns='http://www.absint.com/apx'
+  ><analyses_options xmlns='http://www.absint.com/apx'
+    ><extract_annotations_from_source_files
+      >true</extract_annotations_from_source_files
+      ><xml_call_graph
+      >true</xml_call_graph
+      ><xml_show_per_context_info
+      >true</xml_show_per_context_info
+      ><persistence_analysis
+      >true</persistence_analysis
+      ><xml_wcet_path
+      >true</xml_wcet_path
+      ><xml_non_wcet_cycles
+      >true</xml_non_wcet_cycles
+      ><path_analysis_variant
+      >Prediction file based (ILP))</path_analysis_variant
+      ><instruction_cache_mode
+      >Always hit</instruction_cache_mode
+      ></analyses_options
+    ><general_options xmlns='http://www.absint.com/apx'
+    ><include_path
+      >.</include_path
+      ></general_options
+    ></options
+  ><files xmlns='http://www.absint.com/apx'
+  ><executables
+    >/home/alex/work/patmos-dist.cur/bench/build/Debie1-e/code/debie1</executables
+    ><ais
+    >/home/alex/work/patmos-dist.cur/bench/build/Debie1-e/code/ait.HandleTelecommand/debie1_4d.ais</ais
+    ><xml_results
+    >/home/alex/work/patmos-dist.cur/bench/build/Debie1-e/code/ait.HandleTelecommand/debie1_4d.ait.xml</xml_results
+    ><report
+    >/home/alex/work/patmos-dist.cur/bench/build/Debie1-e/code/ait.HandleTelecommand/debie1_4d.ait.txt</report
+    ></files
+  ><analyses xmlns='http://www.absint.com/apx'
+  ><analysis xmlns='http://www.absint.com/apx' id='aiT' type='wcet_analysis' enabled='true'
+    ><analysis_start
+      >HandleTelecommand</analysis_start
+      ><xml_report
+      >/home/alex/work/patmos-dist.cur/bench/build/Debie1-e/code/ait.HandleTelecommand/debie1_4d.ait.HandleTelecommand.xml</xml_report
+      ></analysis
+    ></analyses
+  ></project
+>
