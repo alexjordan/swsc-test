@@ -8,7 +8,6 @@
    <persistence_analysis xmlns="http://www.absint.com/apx">true</persistence_analysis>
    <xml_wcet_path xmlns="http://www.absint.com/apx">true</xml_wcet_path>
    <xml_non_wcet_cycles xmlns="http://www.absint.com/apx">true</xml_non_wcet_cycles>
-   <instruction_cache_mode xmlns="http://www.absint.com/apx">Always hit</instruction_cache_mode>
   </analyses_options>
   <general_options xmlns="http://www.absint.com/apx">
    <include_path xmlns="http://www.absint.com/apx">.</include_path>
@@ -16,14 +15,15 @@
  </options>
  <files xmlns="http://www.absint.com/apx">
   <executables xmlns="http://www.absint.com/apx">../debie1</executables>
-  <ais xmlns="http://www.absint.com/apx">debie1_4c.ais</ais>
-  <xml_results xmlns="http://www.absint.com/apx">debie1_4c.ait.xml</xml_results>
-  <report xmlns="http://www.absint.com/apx">debie1_4c.ait.txt</report>
+  <ais xmlns="http://www.absint.com/apx">debie1_6d.ais</ais>
+  <xml_results xmlns="http://www.absint.com/apx">debie1_6d.ait.xml</xml_results>
+  <report xmlns="http://www.absint.com/apx">debie1_6d.ait.txt</report>
  </files>
  <analyses xmlns="http://www.absint.com/apx">
-  <analysis xmlns="http://www.absint.com/apx" type="wcet_analysis" enabled="true" id="aiT">
-   <analysis_start xmlns="http://www.absint.com/apx">HandleTelecommand</analysis_start>
-   <xml_report xmlns="http://www.absint.com/apx">debie1_4c.ait.HandleTelecommand.xml</xml_report>
+  <analysis xmlns="http://www.absint.com/apx" type="wcet_analysis" id="aiT" enabled="true">
+   <analysis_start xmlns="http://www.absint.com/apx">HandleHealthMonitoring</analysis_start>
+   <xml_report xmlns="http://www.absint.com/apx">debie1_6d.ait.HandleTelecommand.xml</xml_report>
+   <gdl>debie1_6d.ait.HandleTelecommand.gdl</gdl>
   </analysis>
  </analyses>
 </project>

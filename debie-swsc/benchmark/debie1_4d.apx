@@ -1,5 +1,5 @@
 <!DOCTYPE APX>
-<project xmlns="http://www.absint.com/apx" version="14.04i" target="patmos" build="220984">
+<project xmlns="http://www.absint.com/apx" build="220984" target="patmos" version="14.04i">
  <options xmlns="http://www.absint.com/apx">
   <analyses_options xmlns="http://www.absint.com/apx">
    <extract_annotations_from_source_files xmlns="http://www.absint.com/apx">true</extract_annotations_from_source_files>
@@ -8,7 +8,6 @@
    <persistence_analysis xmlns="http://www.absint.com/apx">true</persistence_analysis>
    <xml_wcet_path xmlns="http://www.absint.com/apx">true</xml_wcet_path>
    <xml_non_wcet_cycles xmlns="http://www.absint.com/apx">true</xml_non_wcet_cycles>
-   <instruction_cache_mode xmlns="http://www.absint.com/apx">Always hit</instruction_cache_mode>
   </analyses_options>
   <general_options xmlns="http://www.absint.com/apx">
    <include_path xmlns="http://www.absint.com/apx">.</include_path>
@@ -16,14 +15,15 @@
  </options>
  <files xmlns="http://www.absint.com/apx">
   <executables xmlns="http://www.absint.com/apx">../debie1</executables>
-  <ais xmlns="http://www.absint.com/apx">debie1_4b.ais</ais>
-  <xml_results xmlns="http://www.absint.com/apx">debie1_4b.ait.xml</xml_results>
-  <report xmlns="http://www.absint.com/apx">debie1_4b.ait.txt</report>
+  <ais xmlns="http://www.absint.com/apx">debie1_4d.ais</ais>
+  <xml_results xmlns="http://www.absint.com/apx">debie1_4d.ait.xml</xml_results>
+  <report xmlns="http://www.absint.com/apx">debie1_4d.ait.txt</report>
  </files>
  <analyses xmlns="http://www.absint.com/apx">
-  <analysis xmlns="http://www.absint.com/apx" type="wcet_analysis" enabled="true" id="aiT">
+  <analysis xmlns="http://www.absint.com/apx" id="aiT" enabled="true" type="wcet_analysis">
    <analysis_start xmlns="http://www.absint.com/apx">HandleTelecommand</analysis_start>
-   <xml_report xmlns="http://www.absint.com/apx">debie1_4b.ait.HandleTelecommand.xml</xml_report>
+   <xml_report xmlns="http://www.absint.com/apx">debie1_4d.ait.HandleTelecommand.xml</xml_report>
+   <gdl>debie1_4d.ait.HandleTelecommand.gdl</gdl>
   </analysis>
  </analyses>
 </project>

@@ -1,0 +1,29 @@
+<!DOCTYPE APX>
+<project xmlns="http://www.absint.com/apx" build="220984" version="14.04i" target="patmos">
+ <options xmlns="http://www.absint.com/apx">
+  <analyses_options xmlns="http://www.absint.com/apx">
+   <extract_annotations_from_source_files xmlns="http://www.absint.com/apx">true</extract_annotations_from_source_files>
+   <xml_call_graph xmlns="http://www.absint.com/apx">true</xml_call_graph>
+   <xml_show_per_context_info xmlns="http://www.absint.com/apx">true</xml_show_per_context_info>
+   <persistence_analysis xmlns="http://www.absint.com/apx">true</persistence_analysis>
+   <xml_wcet_path xmlns="http://www.absint.com/apx">true</xml_wcet_path>
+   <xml_non_wcet_cycles xmlns="http://www.absint.com/apx">true</xml_non_wcet_cycles>
+  </analyses_options>
+  <general_options xmlns="http://www.absint.com/apx">
+   <include_path xmlns="http://www.absint.com/apx">.</include_path>
+  </general_options>
+ </options>
+ <files xmlns="http://www.absint.com/apx">
+  <executables xmlns="http://www.absint.com/apx">../debie1</executables>
+  <ais xmlns="http://www.absint.com/apx">debie1_6a.ais</ais>
+  <xml_results xmlns="http://www.absint.com/apx">debie1_6a.ait.xml</xml_results>
+  <report xmlns="http://www.absint.com/apx">debie1_6a.ait.txt</report>
+ </files>
+ <analyses xmlns="http://www.absint.com/apx">
+  <analysis xmlns="http://www.absint.com/apx" id="aiT" enabled="true" type="wcet_analysis">
+   <analysis_start xmlns="http://www.absint.com/apx">HandleHealthMonitoring</analysis_start>
+   <xml_report xmlns="http://www.absint.com/apx">debie1_6a.ait.HandleTelecommand.xml</xml_report>
+   <gdl>debie1_6a.ait.HandleTelecommand.gdl</gdl>
+  </analysis>
+ </analyses>
+</project>

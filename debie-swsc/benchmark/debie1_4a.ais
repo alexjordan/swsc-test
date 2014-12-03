@@ -1,0 +1,39 @@
+# configure compiler
+compiler "patmos-llvm";
+
+#context specification
+interproc flexible, max-length = inf, max-unroll = inf, default-unroll = 2;
+
+cache instruction size = 4096, associativity = 4, line-size = 32, policy = LRU, may = chaos;
+
+cache data size=2048, associativity=4, line-size=32,policy=LRU, may=chaos; # PML machine configuration
+area 0x00000000 .. 0xffffffff access code read transfer-time = [22,1]; # PML machine configuration
+area 0x00000000 .. 0xffffffff access data read transfer-time = [22,1], data write time = 5; # PML machine configuration
+
+instruction ".LBB43_2" + 16 bytes branches to ".LBB43_6", ".LBB43_5", ".LBB43_4", ".LBB43_3"; # jumptable (source: llvm)
+instruction ".LBB55_9" + 16 bytes branches to ".LBB55_17", ".LBB55_14", ".LBB55_10", ".LBB55_11", ".LBB55_13"; # jumptable (source: llvm)
+instruction ".LBB60_4" + 16 bytes branches to ".LBB60_11", ".LBB60_12", ".LBB60_18", ".LBB60_14", ".LBB60_17"; # jumptable (source: llvm)
+instruction ".LBB37_2" + 16 bytes branches to ".LBB37_6", ".LBB37_5", ".LBB37_4", ".LBB37_3"; # jumptable (source: llvm)
+instruction ".LBB22_1" + 16 bytes branches to ".LBB22_2", ".LBB22_6", ".LBB22_8", ".LBB22_10", ".LBB22_13", ".LBB22_14", ".LBB22_16", ".LBB22_19", ".LBB22_24", ".LBB22_22"; # jumptable (source: llvm)
+instruction ".LBB58_5" + 16 bytes branches to ".LBB58_11", ".LBB58_22", ".LBB58_21", ".LBB58_25", ".LBB58_26"; # jumptable (source: llvm)
+instruction ".LBB25_2" + 16 bytes branches to ".LBB25_3", ".LBB25_6", ".LBB25_7", ".LBB25_8", ".LBB25_9", ".LBB25_10", ".LBB25_11"; # jumptable (source: llvm)
+instruction ".LBB57_1" + 16 bytes branches to ".LBB57_18", ".LBB57_46", ".LBB57_19", ".LBB57_20", ".LBB57_21", ".LBB57_23", ".LBB57_25", ".LBB57_28", ".LBB57_3", ".LBB57_30", ".LBB57_31", ".LBB57_32", ".LBB57_8", ".LBB57_9", ".LBB57_10", ".LBB57_11", ".LBB57_12", ".LBB57_13", ".LBB57_14", ".LBB57_15", ".LBB57_16", ".LBB57_17", ".LBB57_33", ".LBB57_34", ".LBB57_35", ".LBB57_36", ".LBB57_37", ".LBB57_38", ".LBB57_39", ".LBB57_40", ".LBB57_41", ".LBB57_2"; # jumptable (source: llvm)
+instruction ".LBB36_2" + 16 bytes branches to ".LBB36_6", ".LBB36_5", ".LBB36_4", ".LBB36_3"; # jumptable (source: llvm)
+
+#input constraints
+routine "HandleTelecommand" area "event_queue_length" contains 0..10;
+routine "HandleTelecommand" area "memory_buffer_index" contains 0..32;
+
+#other constraints
+snippet "Reboot" is never executed;
+
+#loop bounds
+loop "PatchCode" +1 loop max 32 end;
+loop "ClearEvents" +1 loops max 10 end;
+
+ais2 { routine "HandleTelecommand" {
+         enter with:
+             reg("r19") = 0x5000000,
+             reg("r20") = 0x5000000;
+     }   }
+
